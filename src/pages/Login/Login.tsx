@@ -1,30 +1,59 @@
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
+import { useMutation } from 'react-query';
 import { Link } from 'react-router-dom';
+import { login } from 'src/apis/auth.api';
 import Input from 'src/components/Input';
-import { getRules } from 'src/utils/rules';
+import { AppContext } from 'src/contexts/app.context';
+import { ErrorResponse } from 'src/types/utils.type';
+import { schema, Schema } from 'src/utils/rules';
+import { isAxiosUnprocessableEntityError } from 'src/utils/utils';
 
-interface FormData {
-    email: string;
-    password: string;
-}
+type FormData = Omit<Schema, 'confirm_password'>;
+
+const loginSchema = schema.omit(['confirm_password']);
 
 function Login() {
+    const { setIsAuthenticated } = useContext(AppContext);
     const {
         register,
         handleSubmit,
-        getValues,
+        setError,
         formState: { errors },
-    } = useForm<FormData>();
-    const rules = getRules(getValues);
+    } = useForm<FormData>({
+        resolver: yupResolver(loginSchema),
+    });
+
+    const loginAccountMutation = useMutation({
+        mutationFn: (body: FormData) => login(body),
+    });
     const onSubmit = handleSubmit((data) => {
-        console.log(data);
+        loginAccountMutation.mutate(data, {
+            onSuccess: () => {
+                setIsAuthenticated(true);
+            },
+            onError: (error) => {
+                if (isAxiosUnprocessableEntityError<ErrorResponse<FormData>>(error)) {
+                    const formError = error.response?.data.data;
+                    if (formError) {
+                        Object.keys(formError).forEach((key) => {
+                            setError(key as keyof FormData, {
+                                message: formError[key as keyof FormData],
+                                type: 'Server',
+                            });
+                        });
+                    }
+                }
+            },
+        });
     });
     return (
         <div className="bg-orange ">
             <div className="container">
                 <div className="grid grid-cols-1 py-12 lg:grid-cols-5 lg:py-32 lg:pr-10">
                     <div className="lg:col-span-2 lg:col-start-4">
-                        <form className="rounded bg-white p-10 shadow-sm" onSubmit={onSubmit}>
+                        <form className="rounded bg-white p-10 shadow-sm" onSubmit={onSubmit} noValidate>
                             <div className="text-2xl">Đăng nhập</div>
                             <Input
                                 type="email"
@@ -32,7 +61,6 @@ function Login() {
                                 placeholder="Email"
                                 register={register}
                                 errorMessage={errors.email?.message}
-                                rules={rules.email}
                                 name="email"
                             />
                             <Input
@@ -40,13 +68,15 @@ function Login() {
                                 className="mt-3"
                                 placeholder="Password"
                                 register={register}
-                                errorMessage={errors.password?.message}
-                                rules={rules.password}
                                 name="password"
+                                errorMessage={errors.password?.message}
                                 autoComplete="true"
                             />
                             <div className="mt-3">
-                                <button className="w-full bg-red-500 py-4 px-2 text-center text-sm uppercase text-white hover:bg-red-600">
+                                <button
+                                    type="submit"
+                                    className="w-full bg-red-500 py-4 px-2 text-center text-sm uppercase text-white hover:bg-red-600"
+                                >
                                     Đăng nhập
                                 </button>
                             </div>

@@ -7,11 +7,14 @@ import { useMutation } from 'react-query';
 import { registerAccount } from 'src/apis/auth.api';
 import { omit } from 'lodash';
 import { isAxiosUnprocessableEntityError } from 'src/utils/utils';
-import { ResponseApi } from 'src/types/utils.type';
+import { ErrorResponse } from 'src/types/utils.type';
+import { useContext } from 'react';
+import { AppContext } from 'src/contexts/app.context';
 
 type FormData = Schema;
 
 function Register() {
+    const { setIsAuthenticated } = useContext(AppContext);
     const {
         register,
         handleSubmit,
@@ -26,11 +29,11 @@ function Register() {
     const onSubmit = handleSubmit((data) => {
         const body = omit(data, ['confirm_password']);
         registerAccountMutation.mutate(body, {
-            onSuccess: (data) => {
-                console.log(data);
+            onSuccess: () => {
+                setIsAuthenticated(true);
             },
             onError: (error) => {
-                if (isAxiosUnprocessableEntityError<ResponseApi<Omit<FormData, 'confirm_password'>>>(error)) {
+                if (isAxiosUnprocessableEntityError<ErrorResponse<Omit<FormData, 'confirm_password'>>>(error)) {
                     const formError = error.response?.data.data;
                     if (formError) {
                         Object.keys(formError).forEach((key) => {

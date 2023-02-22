@@ -2,15 +2,17 @@ import { useContext } from 'react';
 import { useMutation } from 'react-query';
 import { Link } from 'react-router-dom';
 import { logout } from 'src/apis/auth.api';
+import path from 'src/constants/path';
 import { AppContext } from 'src/contexts/app.context';
 import Popover from '../Popover';
 
 export default function Header() {
-    const { isAuthenticated, setIsAuthenticated } = useContext(AppContext);
+    const { isAuthenticated, setIsAuthenticated, setProfile, profile } = useContext(AppContext);
     const logoutMutation = useMutation({
         mutationFn: () => logout(),
         onSuccess: () => {
             setIsAuthenticated(false);
+            setProfile(null);
         },
     });
 
@@ -65,7 +67,7 @@ export default function Header() {
                             renderPopover={
                                 <div className="relative rounded-sm border border-gray-200 bg-white shadow-md">
                                     <Link
-                                        to="/profile"
+                                        to={path.profile}
                                         className="block w-full bg-white py-3 px-4 text-left hover:bg-slate-100 hover:text-cyan-500"
                                     >
                                         Tài khoản của tôi
@@ -92,14 +94,14 @@ export default function Header() {
                                     className="h-full w-full rounded-full object-cover"
                                 />
                             </div>
-                            <div>duthanhduoc</div>
+                            <div>{profile?.email}</div>
                         </Popover>
                     ) : (
                         <div className="item-center flex">
-                            <Link className="ml-4 py-1" to="/register">
+                            <Link className="ml-4 py-1" to={path.register}>
                                 Đăng Ký
                             </Link>
-                            <Link className="ml-4 py-1" to="/login">
+                            <Link className="ml-4 py-1" to={path.login}>
                                 Đăng Nhập
                             </Link>
                         </div>

@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 import { Link } from 'react-router-dom';
 import { login } from 'src/apis/auth.api';
+import Button from 'src/components/Button';
 import Input from 'src/components/Input';
 import { AppContext } from 'src/contexts/app.context';
 import { ErrorResponse } from 'src/types/utils.type';
@@ -15,7 +16,7 @@ type FormData = Omit<Schema, 'confirm_password'>;
 const loginSchema = schema.omit(['confirm_password']);
 
 function Login() {
-    const { setIsAuthenticated } = useContext(AppContext);
+    const { setIsAuthenticated, setProfile } = useContext(AppContext);
     const {
         register,
         handleSubmit,
@@ -30,8 +31,9 @@ function Login() {
     });
     const onSubmit = handleSubmit((data) => {
         loginAccountMutation.mutate(data, {
-            onSuccess: () => {
+            onSuccess: (data) => {
                 setIsAuthenticated(true);
+                setProfile(data.data.data.user);
             },
             onError: (error) => {
                 if (isAxiosUnprocessableEntityError<ErrorResponse<FormData>>(error)) {
@@ -73,12 +75,14 @@ function Login() {
                                 autoComplete="true"
                             />
                             <div className="mt-3">
-                                <button
+                                <Button
                                     type="submit"
-                                    className="w-full bg-red-500 py-4 px-2 text-center text-sm uppercase text-white hover:bg-red-600"
+                                    className="flex  w-full items-center justify-center bg-red-500 py-4 px-2 text-sm uppercase text-white hover:bg-red-600"
+                                    isLoading={loginAccountMutation.isLoading}
+                                    disabled={loginAccountMutation.isLoading}
                                 >
                                     Đăng nhập
-                                </button>
+                                </Button>
                             </div>
                             <div className="mt-8 flex items-center justify-center">
                                 <span className="text-gray-400">Bạn chưa có tài khoản?</span>

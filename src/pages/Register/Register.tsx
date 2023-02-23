@@ -4,7 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import Input from 'src/components/Input';
 import { schema, Schema } from 'src/utils/rules';
 import { useMutation } from 'react-query';
-import { registerAccount } from 'src/apis/auth.api';
+import authApi from 'src/apis/auth.api';
 import { omit } from 'lodash';
 import { isAxiosUnprocessableEntityError } from 'src/utils/utils';
 import { ErrorResponse } from 'src/types/utils.type';
@@ -25,7 +25,7 @@ function Register() {
         resolver: yupResolver(schema),
     });
     const registerAccountMutation = useMutation({
-        mutationFn: (body: Omit<FormData, 'confirm_password'>) => registerAccount(body),
+        mutationFn: (body: Omit<FormData, 'confirm_password'>) => authApi.registerAccount(body),
     });
     const onSubmit = handleSubmit((data) => {
         const body = omit(data, ['confirm_password']);

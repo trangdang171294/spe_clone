@@ -1,4 +1,3 @@
-import { profile } from 'console';
 import { User } from 'src/types/user.type';
 
 export const saveAccessTokenToLocalStorage = (access_token: string) => {

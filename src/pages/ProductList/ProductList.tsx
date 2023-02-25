@@ -7,6 +7,7 @@ import { ProductListConfig } from 'src/types/product.type';
 import Product from './Product/Product';
 import SidebarFilter from './SidebarFilter';
 import SortProductList from './SortProductList';
+import categoryApi from 'src/apis/category.api';
 
 export type QueryConfig = {
     [key in keyof ProductListConfig]: string;
@@ -26,6 +27,7 @@ function ProductList() {
             price_max: queryParams.price_max,
             price_min: queryParams.price_min,
             rating_filter: queryParams.rating_filter,
+            category: queryParams.category,
         },
         isUndefined,
     );
@@ -37,13 +39,21 @@ function ProductList() {
         },
         keepPreviousData: true,
     });
+
+    const { data: categoriesData } = useQuery({
+        queryKey: ['categories'],
+        queryFn: () => {
+            return categoryApi.getCategories();
+        },
+    });
+
     return (
         <div className="bg-gray-200 py-6">
             <div className="container">
                 {productsData && (
                     <div className="grid grid-cols-12 gap-6">
                         <div className="col-span-3">
-                            <SidebarFilter />
+                            <SidebarFilter queryConfig={queryConfig} categories={categoriesData?.data.data || []} />
                         </div>
                         <div className="col-span-9">
                             <SortProductList

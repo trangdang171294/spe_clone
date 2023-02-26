@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios';
 import HttpStatusCode from 'src/constants/httpStatusCode.enum';
-import { number } from 'yup';
+import { number, string } from 'yup';
 
 // xu ly loi tra ve tu api
 export function isAxiosError<T>(error: unknown): error is AxiosError<T> {
@@ -26,3 +26,18 @@ export function formatNumberToSocialStyle(value: number) {
         .replace('.', ',')
         .toLowerCase();
 }
+
+export const rateSale = (original: number, sale: number) => Math.round(((original - sale) / original) * 100) + '%';
+
+export const removeSpecialCharacter = (str: string) =>
+    // eslint-disable-next-line no-useless-escape
+    str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g, '');
+
+export const generateNameid = ({ name, id }: { name: string; id: string }) => {
+    return removeSpecialCharacter(name).replace(/\s/g, '-') + `-i-${id}`;
+};
+
+export const getIdfromNameId = (nameId: string) => {
+    const arr = nameId.split('-i-');
+    return arr[arr.length - 1];
+};

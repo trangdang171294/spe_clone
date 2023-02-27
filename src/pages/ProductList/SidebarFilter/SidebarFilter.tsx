@@ -5,12 +5,12 @@ import Button from 'src/components/Button';
 import InputNumber from 'src/components/InputNumber';
 import path from 'src/constants/path';
 import { Category } from 'src/types/category.type';
-import { QueryConfig } from '../ProductList';
 import { Schema, schema } from 'src/utils/rules';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { NoUndefinedField } from 'src/types/utils.type';
 import RatingStars from '../RatingStars';
 import { omit } from 'lodash';
+import { QueryConfig } from 'src/hooks/useQueryConfig';
 
 interface PropsType {
     categories: Category[];

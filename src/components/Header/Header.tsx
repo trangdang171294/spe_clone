@@ -2,7 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { omit } from 'lodash';
 import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { createSearchParams, Link, useNavigate } from 'react-router-dom';
 import authApi from 'src/apis/auth.api';
 import purchaseApi from 'src/apis/purchase.api';
@@ -24,6 +24,8 @@ const MAX_PURCHASES = 5;
 export default function Header() {
     const queryConfig = useQueryConfig();
 
+    const queryClient = useQueryClient();
+
     const { register, handleSubmit } = useForm<FormData>({
         defaultValues: {
             name: '',
@@ -39,6 +41,7 @@ export default function Header() {
         onSuccess: () => {
             setIsAuthenticated(false);
             setProfile(null);
+            queryClient.removeQueries({ queryKey: ['purchases', { status: purchasesStatus.inCart }] });
         },
     });
 
@@ -235,9 +238,12 @@ export default function Header() {
                                                             : ''}{' '}
                                                         Thêm hàng vào giỏ
                                                     </div>
-                                                    <button className="rounded-sm bg-orange px-4 py-2 capitalize text-white hover:bg-opacity-90">
+                                                    <Link
+                                                        to={path.cart}
+                                                        className="rounded-sm bg-orange px-4 py-2 capitalize text-white hover:bg-opacity-90"
+                                                    >
                                                         Xem giỏ hàng
-                                                    </button>
+                                                    </Link>
                                                 </div>
                                             </div>
                                         ) : (

@@ -57,9 +57,9 @@ export default function useRouteElement() {
                 {
                     path: path.cart,
                     element: (
-                        <MainLayout>
+                        <CartLayout>
                             <Cart />
-                        </MainLayout>
+                        </CartLayout>
                     ),
                 },
             ],

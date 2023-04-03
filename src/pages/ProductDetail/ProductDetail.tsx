@@ -1,12 +1,13 @@
 import DOMPurify from 'dompurify';
 import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import productApi from 'src/apis/product.api';
 import purchaseApi from 'src/apis/purchase.api';
 import ProductRating from 'src/components/ProductRating';
 import QuantityController from 'src/components/QuantityController';
+import path from 'src/constants/path';
 import { purchasesStatus } from 'src/constants/purchase';
 import { Product as ProductType, ProductListConfig } from 'src/types/product.type';
 import { formatCurrency, formatNumberToSocialStyle, getIdfromNameId, rateSale } from 'src/utils/utils';
@@ -45,11 +46,7 @@ function ProductDetail() {
 
     const addToCartMutation = useMutation(purchaseApi.addToCart);
 
-    useEffect(() => {
-        if (product && product.images.length > 0) {
-            setActiveImage(product.images[0]);
-        }
-    }, [product]);
+    const navigate = useNavigate();
 
     const next = () => {
         if (currentIndexImages[1] < (product as ProductType)?.images.length) {
@@ -82,6 +79,23 @@ function ProductDetail() {
             },
         );
     };
+
+    const buyNow = async () => {
+        const res = await addToCartMutation.mutateAsync({ buy_count: buyCount, product_id: product?._id as string });
+        const purchase = res.data.data;
+        navigate(path.cart, {
+            state: {
+                purchaseId: purchase._id,
+            },
+        });
+    };
+
+    useEffect(() => {
+        if (product && product.images.length > 0) {
+            setActiveImage(product.images[0]);
+        }
+    }, [product]);
+
     if (!product) return null;
 
     return (
@@ -240,7 +254,10 @@ function ProductDetail() {
                                     </svg>
                                     Thêm vào giỏ hàng
                                 </button>
-                                <button className="ml-4 flex h-12 min-w-[5rem] items-center justify-center rounded-sm bg-orange px-5 capitalize text-white shadow-sm outline-none hover:bg-orange/90">
+                                <button
+                                    onClick={buyNow}
+                                    className="ml-4 flex h-12 min-w-[5rem] items-center justify-center rounded-sm bg-orange px-5 capitalize text-white shadow-sm outline-none hover:bg-orange/90"
+                                >
                                     Mua ngay
                                 </button>
                             </div>

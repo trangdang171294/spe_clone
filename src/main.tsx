@@ -12,6 +12,8 @@ const queryClient = new QueryClient({
         queries: {
             // disable option khi focus windown thi ko refetch lai data
             refetchOnWindowFocus: false,
+            // disable retry query
+            retry: 0,
         },
     },
 });

@@ -2,7 +2,7 @@ import axios, { AxiosError, AxiosInstance } from 'axios';
 import { toast } from 'react-toastify';
 import HttpStatusCode from 'src/constants/httpStatusCode.enum';
 import { AuthResponse } from 'src/types/auth.type';
-import { clearAccessTokenFromLS, getAccessTokenFromLS, saveAccessTokenToLocalStorage, setProfile } from './auth';
+import { clearAccessTokenFromLS, getAccessTokenFromLS, saveAccessTokenToLocalStorage, setProfileLS } from './auth';
 
 class Http {
     instance: AxiosInstance;
@@ -44,7 +44,7 @@ class Http {
                     const data = response.data as AuthResponse;
                     this.accessToken = data.data.access_token;
                     saveAccessTokenToLocalStorage(this.accessToken);
-                    setProfile(data.data.user);
+                    setProfileLS(data.data.user);
                 } else if (url === '/logout') {
                     this.accessToken = '';
                     clearAccessTokenFromLS();
@@ -57,7 +57,7 @@ class Http {
                 if (error.response?.status !== HttpStatusCode.UnprocessableEntity) {
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     const data: any | undefined = error.response?.data;
-                    const message = data.message || error.message;
+                    const message = data?.message || error.message;
                     toast.error(message);
                 }
                 if (error.response?.status === HttpStatusCode.Unauthorized) {

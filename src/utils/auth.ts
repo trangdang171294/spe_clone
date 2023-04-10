@@ -20,6 +20,6 @@ export const getProfile = () => {
     return result ? JSON.parse(result) : null;
 };
 
-export const setProfile = (profile: User) => {
+export const setProfileLS = (profile: User) => {
     localStorage.setItem('profile', JSON.stringify(profile));
 };

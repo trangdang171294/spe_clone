@@ -1,6 +1,7 @@
 import axios, { AxiosError } from 'axios';
+import config from 'src/constants/config';
 import HttpStatusCode from 'src/constants/httpStatusCode.enum';
-import { number, string } from 'yup';
+import userPlacholder from 'src/assets/images/user-icon-image-placeholder.jpg';
 
 // xu ly loi tra ve tu api
 export function isAxiosError<T>(error: unknown): error is AxiosError<T> {
@@ -41,3 +42,6 @@ export const getIdfromNameId = (nameId: string) => {
     const arr = nameId.split('-i-');
     return arr[arr.length - 1];
 };
+
+export const getAvatarUrl = (avatarName?: string) =>
+    avatarName ? `${config.baseUrl}images/${avatarName}` : userPlacholder;

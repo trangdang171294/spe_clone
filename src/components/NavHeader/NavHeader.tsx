@@ -6,6 +6,7 @@ import path from 'src/constants/path';
 import { purchasesStatus } from 'src/constants/purchase';
 import { AppContext } from 'src/contexts/app.context';
 import Popover from '../Popover';
+import { getAvatarUrl } from 'src/utils/utils';
 
 export default function NavHeader() {
     const queryClient = useQueryClient();
@@ -76,7 +77,7 @@ export default function NavHeader() {
                                 Tài khoản của tôi
                             </Link>
                             <Link
-                                to="/"
+                                to={path.historyPurchase}
                                 className="block w-full bg-white py-3 px-4 text-left hover:bg-slate-100 hover:text-cyan-500"
                             >
                                 Đơn mua
@@ -92,7 +93,7 @@ export default function NavHeader() {
                 >
                     <div className="mr-2 h-6 w-6 flex-shrink-0">
                         <img
-                            src="https://cf.shopee.vn/file/d04ea22afab6e6d250a370d7ccc2e675_tn"
+                            src={getAvatarUrl(profile?.avatar)}
                             alt="avatar"
                             className="h-full w-full rounded-full object-cover"
                         />

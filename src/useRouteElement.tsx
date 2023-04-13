@@ -1,20 +1,31 @@
-import { useContext } from 'react';
+import { useContext, lazy, Suspense } from 'react';
 import { Navigate, Outlet, useRoutes } from 'react-router-dom';
 import path from './constants/path';
 import { AppContext } from './contexts/app.context';
 import CartLayout from './layouts/CartLayout';
 import MainLayout from './layouts/MainLayout/MainLayout';
 import RegisterLayout from './layouts/RegisterLayout';
-import Cart from './pages/Cart';
-import Login from './pages/Login';
-import ProductDetail from './pages/ProductDetail';
-import ProductList from './pages/ProductList';
-import Profile from './pages/User/pages/Profile';
-import Register from './pages/Register';
+// import Cart from './pages/Cart';
+// import Login from './pages/Login';
+// import ProductDetail from './pages/ProductDetail';
+// import ProductList from './pages/ProductList';
+// import Profile from './pages/User/pages/Profile';
+// import Register from './pages/Register';
 import UserLayout from './pages/User/layouts/UserLayout';
-import ChangePassword from './pages/User/pages/ChangePassword';
-import HistoryPurchase from './pages/User/pages/HistoryPurchase';
-import NotFound from './pages/NotFound';
+// import ChangePassword from './pages/User/pages/ChangePassword';
+// import HistoryPurchase from './pages/User/pages/HistoryPurchase';
+// import NotFound from './pages/NotFound';
+
+// add lazy cho component
+const Login = lazy(() => import('./pages/Login'));
+const ProductList = lazy(() => import('./pages/ProductList'));
+const Profile = lazy(() => import('./pages/User/pages/Profile'));
+const Register = lazy(() => import('./pages/Register'));
+const ProductDetail = lazy(() => import('./pages/ProductDetail'));
+const Cart = lazy(() => import('./pages/Cart'));
+const ChangePassword = lazy(() => import('./pages/User/pages/ChangePassword'));
+const HistoryPurchase = lazy(() => import('./pages/User/pages/HistoryPurchase'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 function ProtectedRoute() {
     const { isAuthenticated } = useContext(AppContext);
@@ -33,7 +44,9 @@ export default function useRouteElement() {
             index: true,
             element: (
                 <MainLayout>
-                    <ProductList />
+                    <Suspense>
+                        <ProductList />
+                    </Suspense>
                 </MainLayout>
             ),
         },
@@ -42,7 +55,9 @@ export default function useRouteElement() {
             index: true,
             element: (
                 <MainLayout>
-                    <ProductDetail />
+                    <Suspense>
+                        <ProductDetail />
+                    </Suspense>
                 </MainLayout>
             ),
         },
@@ -54,7 +69,9 @@ export default function useRouteElement() {
                     path: path.cart,
                     element: (
                         <CartLayout>
-                            <Cart />
+                            <Suspense>
+                                <Cart />
+                            </Suspense>
                         </CartLayout>
                     ),
                 },
@@ -68,15 +85,27 @@ export default function useRouteElement() {
                     children: [
                         {
                             path: path.profile,
-                            element: <Profile />,
+                            element: (
+                                <Suspense>
+                                    <Profile />
+                                </Suspense>
+                            ),
                         },
                         {
                             path: path.changePassword,
-                            element: <ChangePassword />,
+                            element: (
+                                <Suspense>
+                                    <ChangePassword />
+                                </Suspense>
+                            ),
                         },
                         {
                             path: path.historyPurchase,
-                            element: <HistoryPurchase />,
+                            element: (
+                                <Suspense>
+                                    <HistoryPurchase />
+                                </Suspense>
+                            ),
                         },
                     ],
                 },
@@ -90,7 +119,10 @@ export default function useRouteElement() {
                     path: path.login,
                     element: (
                         <RegisterLayout>
-                            <Login />
+                            {/* neu dung lazy cho component thi p dung supense de bao component do */}
+                            <Suspense>
+                                <Login />
+                            </Suspense>
                         </RegisterLayout>
                     ),
                 },
@@ -98,7 +130,9 @@ export default function useRouteElement() {
                     path: path.register,
                     element: (
                         <RegisterLayout>
-                            <Register />
+                            <Suspense>
+                                <Register />
+                            </Suspense>
                         </RegisterLayout>
                     ),
                 },
@@ -108,7 +142,9 @@ export default function useRouteElement() {
             path: '*',
             element: (
                 <MainLayout>
-                    <NotFound />
+                    <Suspense>
+                        <NotFound />
+                    </Suspense>
                 </MainLayout>
             ),
         },

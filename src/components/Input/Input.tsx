@@ -38,7 +38,7 @@ export default function Input({
     };
 
     return (
-        <div className={className}>
+        <div className={'relative ' + className}>
             <input {...rest} className={classNameInput} {...registerResult} type={handleType()} />
             {rest.type === 'password' && openEye && (
                 <svg

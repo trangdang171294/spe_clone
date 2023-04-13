@@ -13,6 +13,7 @@ import {
 import { URL_LOGIN, URL_LOGOUT, URL_REFRESH_TOKEN, URL_REGISTER } from 'src/apis/auth.api';
 import { isAxiosExpiredTokenError, isAxiosUnauthorizedError } from './utils';
 import { ErrorResponse } from 'src/types/utils.type';
+import config from 'src/constants/config';
 
 class Http {
     instance: AxiosInstance;
@@ -25,7 +26,7 @@ class Http {
         this.refreshToken = getRefreshTokenFromLS();
         this.refreshTokenRequest = null;
         this.instance = axios.create({
-            baseURL: 'https://api-ecom.duthanhduoc.com/',
+            baseURL: config.baseUrl,
             timeout: 10000,
             headers: {
                 'Content-Type': 'application/json',
@@ -127,6 +128,7 @@ class Http {
                     this.refreshToken = '';
                     toast.error(error.response?.data.data?.message || error.response?.data.message);
                 }
+                return Promise.reject(error);
             },
         );
     }

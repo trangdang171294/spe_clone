@@ -4,6 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useContext, useEffect } from 'react';
 import { LocalStorageEventTarget } from './utils/auth';
 import { AppContext } from './contexts/app.context';
+import { HelmetProvider } from 'react-helmet-async';
 
 function App() {
     const routeElements = useRouteElement();
@@ -16,10 +17,10 @@ function App() {
         };
     }, [reset]);
     return (
-        <div className="App">
+        <HelmetProvider>
             {routeElements}
             <ToastContainer />
-        </div>
+        </HelmetProvider>
     );
 }
 

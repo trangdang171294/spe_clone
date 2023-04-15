@@ -12,6 +12,8 @@ import { purchasesStatus } from 'src/constants/purchase';
 import { Product as ProductType, ProductListConfig } from 'src/types/product.type';
 import { formatCurrency, formatNumberToSocialStyle, getIdfromNameId, rateSale } from 'src/utils/utils';
 import Product from '../ProductList/Product';
+import { Helmet } from 'react-helmet-async';
+import { convert } from 'html-to-text';
 
 function ProductDetail() {
     const queryClient = useQueryClient();
@@ -100,6 +102,10 @@ function ProductDetail() {
 
     return (
         <div className="bg-gray-200 py-6">
+            <Helmet>
+                <title>{product.name}-shopee</title>
+                <meta name="description" content={convert(product.description, { limits: { maxInputLength: 120 } })} />
+            </Helmet>
             <div className="container">
                 <div className="bg-white p-4 shadow">
                     <div className="grid grid-cols-12 gap-9">

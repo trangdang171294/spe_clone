@@ -11,6 +11,7 @@ import { NoUndefinedField } from 'src/types/utils.type';
 import RatingStars from '../RatingStars';
 import { omit } from 'lodash';
 import { QueryConfig } from 'src/hooks/useQueryConfig';
+import { useTranslation } from 'react-i18next';
 
 interface PropsType {
     categories: Category[];
@@ -22,6 +23,7 @@ type FormData = NoUndefinedField<Pick<Schema, 'price_max' | 'price_min'>>;
 const priceSchema = schema.pick(['price_min', 'price_max']);
 
 function SidebarFilter({ queryConfig, categories }: PropsType) {
+    const { t } = useTranslation();
     const { category } = queryConfig;
     const {
         control,
@@ -80,7 +82,7 @@ function SidebarFilter({ queryConfig, categories }: PropsType) {
                         </g>
                     </g>
                 </svg>
-                Tất cả danh mục
+                {t('aside filter.All Categories')}
             </Link>
             <div className="my-4 h-[1px] bg-gray-300" />
             <ul>
@@ -129,7 +131,7 @@ function SidebarFilter({ queryConfig, categories }: PropsType) {
                         />
                     </g>
                 </svg>
-                Bộ lọc tìm kiếm
+                {t('aside filter.filter search')}
             </Link>
             <div className="my-4 h-[1px] bg-gray-300" />
             <div className="my-5">
